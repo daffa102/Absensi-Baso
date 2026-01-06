@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -43,6 +44,22 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'role' => 'string',
         ];
+    }
+
+    public function absensis()
+    {
+        return $this->hasMany(Absensi::class, 'guru_piket_id');
+    }
+
+    public function logs_absensis()
+    {
+        return $this->hasMany(LogsAbsensi::class, 'guru_piket_id');
+    }
+
+    public function laporan_absensis()
+    {
+        return $this->hasMany(LaporanAbsensi::class, 'guru_piket_id');
     }
 }
