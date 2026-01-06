@@ -1,5 +1,3 @@
-<?php
-
 namespace App\Livewire\Guru;
 
 use App\Models\Siswa;
@@ -9,44 +7,38 @@ use App\Models\Absensi;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
-class Dashboard extends Component
+class Edit extends Component
 {
     public $kelas_id;
     public $tahun_ajar_id;
     public $tanggal;
     
-    // Maps siswa_id => status (Hadir, Sakit, Izin, Alpa)
+    // Maps siswa_id => status
     public $attendanceData = [];
 
     public function mount()
     {
-        $this->tanggal = date('Y-m-d');
-        // Default to first active academic year if available
+        // Default to yesterday or allow user to pick
+        $this->tanggal = date('Y-m-d', strtotime('-1 day'));
+        
         $activeYear = TahunAjar::where('aktif', true)->first();
         if ($activeYear) {
             $this->tahun_ajar_id = $activeYear->id;
         }
     }
 
-    public function updatedKelasId()
-    {
-        $this->loadStudents();
-    }
-
-    public function updatedTahunAjarId()
-    {
-        $this->loadStudents();
-    }
+    public function updatedKelasId() { $this->loadStudents(); }
+    public function updatedTahunAjarId() { $this->loadStudents(); }
+    public function updatedTanggal() { $this->loadStudents(); }
 
     public function loadStudents()
     {
         $this->attendanceData = [];
 
-        if (!$this->kelas_id || !$this->tahun_ajar_id) {
+        if (!$this->kelas_id || !$this->tahun_ajar_id || !$this->tanggal) {
             return;
         }
 
-        // Efficiently fetch students and their existing attendance for today
         $siswas = Siswa::where('kelas_id', $this->kelas_id)
             ->where('tahun_ajar_id', $this->tahun_ajar_id)
             ->with(['absensis' => function ($query) {
@@ -55,8 +47,9 @@ class Dashboard extends Component
             ->get();
 
         foreach ($siswas as $siswa) {
-            // Pre-fill with existing status or default to 'Hadir'
             $existing = $siswa->absensis->first();
+            // If editing, we only really care about existing records, 
+            // but we can default to 'Hadir' if they want to back-fill
             $this->attendanceData[$siswa->id] = $existing ? $existing->status : 'Hadir';
         }
     }
@@ -66,11 +59,14 @@ class Dashboard extends Component
         $this->validate([
             'kelas_id' => 'required',
             'tahun_ajar_id' => 'required',
+            'tanggal' => 'required|date',
             'attendanceData' => 'required|array',
         ]);
 
         DB::transaction(function () {
             foreach ($this->attendanceData as $siswaId => $status) {
+                // Using updateOrCreate ensures we don't create duplicates
+                // even if multiple users are editing the same class at the same time
                 Absensi::updateOrCreate(
                     [
                         'siswa_id' => $siswaId,
@@ -85,12 +81,12 @@ class Dashboard extends Component
             }
         });
 
-        session()->flash('success', 'Data absensi berhasil disimpan.');
+        session()->flash('success', 'Perubahan absensi berhasil disimpan.');
     }
 
     public function render()
     {
-        return view('livewire.guru.dashboard', [
+        return view('livewire.guru.edit', [
             'kelass' => Kelas::all(),
             'tahunAjars' => TahunAjar::all(),
             'siswas' => ($this->kelas_id && $this->tahun_ajar_id) 

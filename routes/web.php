@@ -2,8 +2,14 @@
 
 use App\Livewire\Auth\Login;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
-use App\Livewire\Guru\Dashboard as GuruDashboard;
-use App\Livewire\Admin\DataKelas\Index as KelasIndex;
+use App\Livewire\Guru\Edit as GuruEdit;
+
+// ... (existing imports)
+
+Route::middleware(['auth', 'role:guru_piket'])->prefix('guru')->name('guru.')->group(function () {
+    Route::get('/dashboard', GuruDashboard::class)->name('dashboard');
+    Route::get('/edit', GuruEdit::class)->name('edit');
+});
 use App\Livewire\Admin\DataKelas\Create as KelasCreate;
 use App\Livewire\Admin\DataKelas\Edit as KelasEdit;
 use App\Livewire\Admin\DataSiswa\Index as SiswaIndex;

@@ -1,9 +1,6 @@
 <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <h2>Absensi Guru Piket</h2>
-        <div style="font-size: 1.1em; color: #666;">
-            Hari ini: <strong>{{ \Carbon\Carbon::parse($tanggal)->translatedFormat('l, d F Y') }}</strong>
-        </div>
+        <h2>Edit Absensi Siswa</h2>
     </div>
 
     @if (session()->has('success'))
@@ -12,7 +9,11 @@
         </div>
     @endif
 
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="form-group">
+            <label>Tanggal Absensi</label>
+            <input type="date" wire:model.live="tanggal" class="form-control">
+        </div>
         <div class="form-group">
             <label>Pilih Tahun Ajar</label>
             <select wire:model.live="tahun_ajar_id" class="form-control">
@@ -33,7 +34,7 @@
         </div>
     </div>
 
-    @if($kelas_id && $tahun_ajar_id)
+    @if($kelas_id && $tahun_ajar_id && $tanggal)
         @if(count($siswas) > 0)
             <form wire:submit.prevent="save">
                 <table>
@@ -71,13 +72,13 @@
                 </table>
                 
                 <div style="margin-top: 2rem; text-align: right;">
-                    <button type="submit" class="btn btn-primary" style="font-size: 1.1em; padding: 0.75rem 2rem;">Simpan Absensi</button>
+                    <button type="submit" class="btn btn-primary" style="font-size: 1.1em; padding: 0.75rem 2rem;">Simpan Perubahan</button>
                 </div>
             </form>
         @else
-            <p style="text-align: center; color: #666; padding: 2rem;">Tidak ada siswa di kelas ini.</p>
+            <p style="text-align: center; color: #666; padding: 2rem;">Tidak ada siswa ditemukan.</p>
         @endif
     @else
-        <p style="text-align: center; color: #666; padding: 2rem;">Silakan pilih Tahun Ajar dan Kelas terlebih dahulu.</p>
+        <p style="text-align: center; color: #666; padding: 2rem;">Silakan lengkapi filter di atas.</p>
     @endif
 </div>
