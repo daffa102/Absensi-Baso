@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Livewire\Guru;
 
 use App\Models\Siswa;
@@ -7,7 +9,7 @@ use App\Models\Absensi;
 use Livewire\Component;
 use Illuminate\Support\Facades\DB;
 
-class Edit extends Component
+class GuruEdit extends Component
 {
     public $kelas_id;
     public $tahun_ajar_id;
@@ -65,8 +67,6 @@ class Edit extends Component
 
         DB::transaction(function () {
             foreach ($this->attendanceData as $siswaId => $status) {
-                // Using updateOrCreate ensures we don't create duplicates
-                // even if multiple users are editing the same class at the same time
                 Absensi::updateOrCreate(
                     [
                         'siswa_id' => $siswaId,
