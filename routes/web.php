@@ -1,4 +1,7 @@
+<?php 
+
 use App\Livewire\Auth\Login;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Guru\Dashboard as GuruDashboard;
 use App\Livewire\Admin\DataKelas\Index as KelasIndex;
 use App\Livewire\Admin\DataKelas\Create as KelasCreate;
@@ -22,6 +25,8 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', AdminDashboard::class)->name('dashboard');
+
     // Tahun Ajar
     Route::get('/tahun-ajar', TahunAjarIndex::class)->name('tahun-ajar.index');
     Route::get('/tahun-ajar/create', TahunAjarCreate::class)->name('tahun-ajar.create');
