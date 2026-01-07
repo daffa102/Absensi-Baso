@@ -5,17 +5,14 @@ namespace App\Livewire\Admin\DataSiswa;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\TahunAjar;
-use App\Imports\SiswaImport;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\WithFileUploads;
-use Maatwebsite\Excel\Facades\Excel;
 
 class Create extends Component
 {
-    use WithFileUploads;
-
+    #[Layout('components.layouts.admin')]
+    
     public $nis, $nama, $kelas_id, $tahun_ajar_id;
-    public $file_excel;
 
     protected $rules = [
         'nis' => 'required|unique:siswas,nis',
@@ -36,18 +33,6 @@ class Create extends Component
         ]);
 
         session()->flash('success', 'Data siswa berhasil ditambahkan.');
-        return redirect()->route('admin.data-siswa.index');
-    }
-
-    public function import()
-    {
-        $this->validate([
-            'file_excel' => 'required|mimes:xlsx,xls,csv',
-        ]);
-
-        Excel::import(new SiswaImport, $this->file_excel->getRealPath());
-
-        session()->flash('success', 'Data siswa berhasil diimport.');
         return redirect()->route('admin.data-siswa.index');
     }
 

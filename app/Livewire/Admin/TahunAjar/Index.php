@@ -3,12 +3,14 @@
 namespace App\Livewire\Admin\TahunAjar;
 
 use App\Models\TahunAjar;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    #[Layout('components.layouts.admin')]
 
     public $search = '';
 

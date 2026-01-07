@@ -5,10 +5,13 @@ namespace App\Livewire\Admin\DataSiswa;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\TahunAjar;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Edit extends Component
 {
+    #[Layout('components.layouts.admin')]
+    
     public $siswaId, $nis, $nama, $kelas_id, $tahun_ajar_id;
 
     public function mount($id)

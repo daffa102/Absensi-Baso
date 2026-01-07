@@ -9,9 +9,11 @@ use App\Exports\AttendanceExport;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Livewire\Attributes\Layout;
 
 class Dashboard extends Component
 {
+    #[Layout('components.layouts.admin')]
     public $selectedDate;
     
     public function mount()

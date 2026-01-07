@@ -3,10 +3,13 @@
 namespace App\Livewire\Admin\DataKelas;
 
 use App\Models\Kelas;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Create extends Component
 {
+    #[Layout('components.layouts.admin')]
+    
     public $nama_kelas;
 
     protected $rules = [

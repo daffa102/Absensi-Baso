@@ -3,10 +3,13 @@
 namespace App\Livewire\Admin\TahunAjar;
 
 use App\Models\TahunAjar;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Create extends Component
 {
+    #[Layout('components.layouts.admin')]
+    
     public $nama;
     public $aktif = false;
 

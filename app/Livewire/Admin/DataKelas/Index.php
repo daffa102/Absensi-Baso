@@ -3,12 +3,14 @@
 namespace App\Livewire\Admin\DataKelas;
 
 use App\Models\Kelas;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class Index extends Component
 {
     use WithPagination;
+    #[Layout('components.layouts.admin')]
 
     public $search = '';
 

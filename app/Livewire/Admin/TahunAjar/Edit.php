@@ -3,10 +3,13 @@
 namespace App\Livewire\Admin\TahunAjar;
 
 use App\Models\TahunAjar;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Edit extends Component
 {
+    #[Layout('components.layouts.admin')]
+    
     public $tahunId;
     public $nama;
     public $aktif;

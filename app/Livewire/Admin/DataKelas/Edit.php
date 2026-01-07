@@ -3,10 +3,13 @@
 namespace App\Livewire\Admin\DataKelas;
 
 use App\Models\Kelas;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Edit extends Component
 {
+    #[Layout('components.layouts.admin')]
+    
     public $kelasId;
     public $nama_kelas;
 
