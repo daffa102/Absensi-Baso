@@ -10,17 +10,24 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class AttendanceExport implements FromCollection, WithHeadings, WithMapping
 {
     protected $date;
+    protected $kelasId;
 
-    public function __construct($date)
+    public function __construct($date, $kelasId = null)
     {
         $this->date = $date;
+        $this->kelasId = $kelasId;
     }
 
     public function collection()
     {
-        return Absensi::with(['siswa', 'siswa.kelas'])
-            ->where('tanggal', $this->date)
-            ->get();
+        $query = Absensi::with(['siswa', 'siswa.kelas', 'kelas'])
+            ->where('tanggal', $this->date);
+        
+        if ($this->kelasId) {
+            $query->where('kelas_id', $this->kelasId);
+        }
+        
+        return $query->get();
     }
 
     public function headings(): array

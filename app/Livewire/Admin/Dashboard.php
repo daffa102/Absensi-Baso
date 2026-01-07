@@ -15,6 +15,7 @@ class Dashboard extends Component
 {
     #[Layout('components.layouts.admin')]
     public $selectedDate;
+    public $selectedKelas = '';
     
     public function mount()
     {
@@ -23,23 +24,31 @@ class Dashboard extends Component
 
     public function exportExcel()
     {
-        return Excel::download(new AttendanceExport($this->selectedDate), 'laporan-absensi-' . $this->selectedDate . '.xlsx');
+        return Excel::download(
+            new AttendanceExport($this->selectedDate, $this->selectedKelas), 
+            'laporan-absensi-' . $this->selectedDate . '.xlsx'
+        );
     }
 
     public function exportPdf()
     {
+        $query = Absensi::with(['siswa.kelas', 'kelas'])
+            ->where('tanggal', $this->selectedDate);
+        
+        if ($this->selectedKelas) {
+            $query->where('kelas_id', $this->selectedKelas);
+        }
+        
         $data = [
             'tanggal' => $this->selectedDate,
+            'kelas' => $this->selectedKelas ? Kelas::find($this->selectedKelas) : null,
             'stats' => [
-                'hadir' => Absensi::where('tanggal', $this->selectedDate)->where('status', 'Hadir')->count(),
-                'sakit' => Absensi::where('tanggal', $this->selectedDate)->where('status', 'Sakit')->count(),
-                'izin' => Absensi::where('tanggal', $this->selectedDate)->where('status', 'Izin')->count(),
-                'alpa' => Absensi::where('tanggal', $this->selectedDate)->where('status', 'Alpa')->count(),
+                'hadir' => (clone $query)->where('status', 'Hadir')->count(),
+                'sakit' => (clone $query)->where('status', 'Sakit')->count(),
+                'izin' => (clone $query)->where('status', 'Izin')->count(),
+                'alpa' => (clone $query)->where('status', 'Alpa')->count(),
             ],
-            'absents' => Absensi::with('siswa.kelas')
-                ->where('tanggal', $this->selectedDate)
-                ->whereIn('status', ['Sakit', 'Izin', 'Alpa'])
-                ->get()
+            'absents' => (clone $query)->whereIn('status', ['Sakit', 'Izin', 'Alpa'])->get()
         ];
 
         $pdf = Pdf::loadView('exports.attendance-pdf', $data);
@@ -52,17 +61,23 @@ class Dashboard extends Component
     {
         $today = date('Y-m-d');
         
+        // Query for absent list with class filter
+        $absentQuery = Absensi::with(['siswa.kelas', 'kelas'])
+            ->where('tanggal', $this->selectedDate)
+            ->whereIn('status', ['Sakit', 'Izin', 'Alpa']);
+        
+        if ($this->selectedKelas) {
+            $absentQuery->where('kelas_id', $this->selectedKelas);
+        }
+        
         return view('livewire.admin.dashboard', [
             'totalSiswa' => Siswa::count(),
             'hadirToday' => Absensi::where('tanggal', $today)->where('status', 'Hadir')->count(),
             'sakitToday' => Absensi::where('tanggal', $today)->where('status', 'Sakit')->count(),
             'izinToday' => Absensi::where('tanggal', $today)->where('status', 'Izin')->count(),
             'alpaToday' => Absensi::where('tanggal', $today)->where('status', 'Alpa')->count(),
-            
-            'absentList' => Absensi::with('siswa.kelas')
-                ->where('tanggal', $this->selectedDate)
-                ->whereIn('status', ['Sakit', 'Izin', 'Alpa'])
-                ->get(),
+            'kelasList' => Kelas::orderBy('nama_kelas')->get(),
+            'absentList' => $absentQuery->get(),
         ]);
     }
 }
