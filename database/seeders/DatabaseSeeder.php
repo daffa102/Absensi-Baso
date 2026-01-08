@@ -17,6 +17,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // 1. Create Users (Admin & Guru)
+        // Note: User model has 'password' => 'hashed' cast, so we provide plain text.
+        
+        // Admin
+        User::updateOrCreate(
+            ['email' => 'admin@admin.com'],
+            [
+                'name' => 'Administrator',
+                'password' => 'password', // Will be hashed by model cast
+                'role' => 'admin',
+            ]
+        );
+
+        // Guru Piket
+        User::updateOrCreate(
+            ['email' => 'guru@guru.com'],
+            [
+                'name' => 'Guru Piket',
+                'password' => 'password', // Will be hashed by model cast
+                'role' => 'guru_piket',
+            ]
+        );
+
         // 3. Create Tahun Ajar
         $tahunAjar = TahunAjar::updateOrCreate(
             ['nama' => '2024/2025'],

@@ -38,6 +38,11 @@ class Index extends Component
         $this->importFile = null;
     }
 
+    public function downloadTemplate()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\SiswaTemplateExport, 'template_import_siswa.xlsx');
+    }
+
     public function importExcel()
     {
         $this->validate([

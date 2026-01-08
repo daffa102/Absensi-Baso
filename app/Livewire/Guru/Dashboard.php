@@ -111,7 +111,7 @@ class Dashboard extends Component
             $siswasQuery->where('nama', 'like', '%' . $this->search . '%');
         }
         
-        $siswas = $siswasQuery->get();
+        $siswas = $siswasQuery->orderBy('nama')->get();
         
         // Load existing absensi for today
         $existingAbsensi = Absensi::where('tanggal', $today)

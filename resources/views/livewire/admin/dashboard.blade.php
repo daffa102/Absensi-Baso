@@ -88,33 +88,11 @@
                     </p>
                 </div>
 
-                <!-- Export Buttons -->
-                <div class="flex items-center gap-3">
-                    <button wire:click="exportExcel"
-                        class="bg-green-600 text-white px-5 py-2.5 rounded-xl font-black text-sm shadow-lg shadow-green-500/30 hover:bg-green-700 transition-all flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                            <polyline points="14 2 14 8 20 8" />
-                        </svg>
-                        Export Excel
-                    </button>
-                    <button wire:click="exportPdf"
-                        class="bg-red-600 text-white px-5 py-2.5 rounded-xl font-black text-sm shadow-lg shadow-red-500/30 hover:bg-red-700 transition-all flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
-                            <polyline points="14 2 14 8 20 8" />
-                        </svg>
-                        Export PDF
-                    </button>
-                </div>
+                <div></div>
             </div>
 
             <!-- Filter Kelas -->
-            <div class="bg-slate-50 p-4 rounded-2xl">
+            <div class="bg-slate-50 p-4 rounded-2xl mb-6">
                 <label class="text-xs font-black text-slate-400 uppercase block mb-2">Filter Kelas</label>
                 <div class="relative">
                     <select wire:model.live="selectedKelas"
@@ -130,6 +108,67 @@
                             stroke-linejoin="round">
                             <path d="m6 9 6 6 6-6" />
                         </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Export Section -->
+            <div class="bg-blue-50 p-6 rounded-2xl border border-blue-100 mb-6">
+                <div class="flex flex-col md:flex-row items-end justify-between gap-4">
+                    <div class="flex-1 w-full flex gap-4">
+                        <!-- Month Selector -->
+                        <div class="flex-1">
+                            <label class="text-xs font-black text-blue-400 uppercase block mb-2">Bulan</label>
+                            <div class="relative">
+                                <select wire:model.live="selectedMonth"
+                                    class="w-full bg-white border-none rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
+                                    @for ($m = 1; $m <= 12; $m++)
+                                        <option value="{{ $m }}">{{ \Carbon\Carbon::create(null, $m, 1)->translatedFormat('F') }}</option>
+                                    @endfor
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Year Selector -->
+                        <div class="flex-1">
+                            <label class="text-xs font-black text-blue-400 uppercase block mb-2">Tahun</label>
+                            <div class="relative">
+                                <select wire:model.live="selectedYear"
+                                    class="w-full bg-white border-none rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
+                                    @for ($y = date('Y') - 1; $y <= date('Y') + 1; $y++)
+                                        <option value="{{ $y }}">{{ $y }}</option>
+                                    @endfor
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button wire:click="exportMonthlyExcel"
+                            class="bg-green-600 text-white px-5 py-3 rounded-xl font-black text-sm shadow-lg shadow-green-500/30 hover:bg-green-700 transition-all flex items-center gap-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>
+                            Rekap Excel
+                        </button>
+                        <button wire:click="exportMonthlyPdf"
+                            class="bg-red-600 text-white px-5 py-3 rounded-xl font-black text-sm shadow-lg shadow-red-500/30 hover:bg-red-700 transition-all flex items-center gap-2">
+                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                <polyline points="14 2 14 8 20 8" />
+                            </svg>
+                            Rekap PDF
+                        </button>
                     </div>
                 </div>
             </div>

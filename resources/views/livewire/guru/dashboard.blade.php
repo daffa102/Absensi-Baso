@@ -158,7 +158,7 @@
         <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100">
             <label class="text-xs font-black text-slate-400 uppercase block mb-3">Cari Siswa</label>
             <div class="relative">
-                <input type="text" wire:model.live="search" placeholder="Nama siswa..."
+                <input type="text" wire:model.blur="search" placeholder="Nama siswa..."
                     class="w-full bg-slate-50 border-none rounded-xl pl-12 pr-4 py-3.5 font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20 outline-none">
                 <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
                     xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
