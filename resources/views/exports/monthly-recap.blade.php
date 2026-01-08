@@ -1,33 +1,34 @@
 <table>
     <thead>
         <tr>
-            <th colspan="35" style="text-align: center; font-weight: bold; font-size: 14pt;">
+            <th colspan="37" style="text-align: center; font-weight: bold; font-size: 14pt;">
                 LAPORAN REKAP ABSENSI KELAS {{ $kelas->nama_kelas }}
             </th>
             <style>
                 tr { page-break-inside: avoid; }
-                td, th { vertical-align: middle; }
+                td, th { vertical-align: middle; padding: 2px; }
+                table { width: 100%; border-collapse: collapse; font-size: 10pt; }
             </style>
         </tr>
         <tr>
-            <th colspan="35" style="text-align: center; font-weight: bold; font-size: 12pt;">
+            <th colspan="37" style="text-align: center; font-weight: bold; font-size: 12pt;">
                 BULAN: {{ strtoupper(\Carbon\Carbon::create(null, $month, 1)->translatedFormat('F Y')) }}
             </th>
         </tr>
         <tr>
-            <th rowspan="2" style="border: 1px solid black; font-weight: bold; text-align: center; vertical-align: middle; width: 50px;">NO</th>
-            <th rowspan="2" style="border: 1px solid black; font-weight: bold; text-align: center; vertical-align: middle; width: 250px;">NAMA SISWA</th>
+            <th rowspan="2" style="border: 1px solid black; font-weight: bold; text-align: center; vertical-align: middle; width: 30px;">NO</th>
+            <th rowspan="2" style="border: 1px solid black; font-weight: bold; text-align: center; vertical-align: middle; width: 200px;">NAMA SISWA</th>
             <th colspan="31" style="border: 1px solid black; font-weight: bold; text-align: center;">TANGGAL</th>
             <th colspan="4" style="border: 1px solid black; font-weight: bold; text-align: center;">TOTAL</th>
         </tr>
         <tr>
             @for ($i = 1; $i <= 31; $i++)
-                <th style="border: 1px solid black; text-align: center; width: 30px;">{{ $i }}</th>
+                <th style="border: 1px solid black; text-align: center; width: 22px;">{{ $i }}</th>
             @endfor
-            <th style="border: 1px solid black; text-align: center; width: 40px;">H</th>
-            <th style="border: 1px solid black; text-align: center; width: 40px;">S</th>
-            <th style="border: 1px solid black; text-align: center; width: 40px;">I</th>
-            <th style="border: 1px solid black; text-align: center; width: 40px;">A</th>
+            <th style="border: 1px solid black; text-align: center; width: 30px;">H</th>
+            <th style="border: 1px solid black; text-align: center; width: 30px;">S</th>
+            <th style="border: 1px solid black; text-align: center; width: 30px;">I</th>
+            <th style="border: 1px solid black; text-align: center; width: 30px;">A</th>
         </tr>
     </thead>
     <tbody>
