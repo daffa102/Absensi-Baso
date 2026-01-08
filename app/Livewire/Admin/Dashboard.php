@@ -5,7 +5,6 @@ namespace App\Livewire\Admin;
 use App\Models\Siswa;
 use App\Models\Kelas;
 use App\Models\Absensi;
-use App\Exports\AttendanceExport;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -71,41 +70,6 @@ class Dashboard extends Component
         }, $fileName);
     }
 
-    // Daily Exports (Legacy/Quick)
-    public function exportExcel()
-    {
-        return Excel::download(
-            new AttendanceExport($this->selectedDate, $this->selectedKelas), 
-            'laporan-absensi-' . $this->selectedDate . '.xlsx'
-        );
-    }
-
-    public function exportPdf()
-    {
-        $query = Absensi::with(['siswa.kelas', 'kelas'])
-            ->where('tanggal', $this->selectedDate);
-        
-        if ($this->selectedKelas) {
-            $query->where('kelas_id', $this->selectedKelas);
-        }
-        
-        $data = [
-            'tanggal' => $this->selectedDate,
-            'kelas' => $this->selectedKelas ? Kelas::find($this->selectedKelas) : null,
-            'stats' => [
-                'hadir' => (clone $query)->where('status', 'Hadir')->count(),
-                'sakit' => (clone $query)->where('status', 'Sakit')->count(),
-                'izin' => (clone $query)->where('status', 'Izin')->count(),
-                'alpa' => (clone $query)->where('status', 'Alpa')->count(),
-            ],
-            'absents' => (clone $query)->whereIn('status', ['Sakit', 'Izin', 'Alpa'])->get()
-        ];
-
-        $pdf = Pdf::loadView('exports.attendance-pdf', $data);
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->stream();
-        }, 'laporan-absensi-' . $this->selectedDate . '.pdf');
-    }
 
     public function render()
     {
