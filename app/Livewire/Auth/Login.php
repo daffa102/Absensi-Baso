@@ -12,12 +12,13 @@ class Login extends Component
     public $password;
 
     protected $rules = [
-        'email' => 'required',
+        'email' => 'required|min:3',
         'password' => 'required',
     ];
 
     protected $messages = [
         'email.required' => 'Email atau NIP harus diisi.',
+        'email.min' => 'Email atau NIP minimal 3 karakter.',
         'password.required' => 'Password harus diisi.',
     ];
 
@@ -33,8 +34,10 @@ class Login extends Component
             $credentials = ['nip' => $this->email, 'password' => $this->password];
             
             if (!Auth::attempt($credentials)) {
-                session()->flash('error', 'Email/NIP atau password yang Anda masukkan salah.');
-                $this->addError('login', 'Email/NIP atau password yang Anda masukkan salah.');
+                $message = 'Email/NIP atau password yang Anda masukkan salah.';
+                session()->flash('error', $message);
+                $this->addError('login', $message);
+                $this->dispatch('error-login', message: $message);
                 return;
             }
         }

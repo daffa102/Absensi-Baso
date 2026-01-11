@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'admin@admin.com'],
             [
                 'name' => 'Administrator',
+                'nip' => '12345678',
                 'password' => 'password', // Will be hashed by model cast
                 'role' => 'admin',
             ]
@@ -35,6 +36,7 @@ class DatabaseSeeder extends Seeder
             ['email' => 'guru@guru.com'],
             [
                 'name' => 'Guru Piket',
+                'nip' => '87654321',
                 'password' => 'password', // Will be hashed by model cast
                 'role' => 'guru_piket',
             ]

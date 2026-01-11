@@ -75,3 +75,25 @@
         @endforeach
     </tbody>
 </table>
+
+{{-- Signature Section --}}
+<br>
+<table style="width: 100%; border: none;">
+    <tr>
+        <td colspan="5" style="border: none; text-align: center; vertical-align: top;">
+            Mengetahui,<br>
+            Kepala Sekolah
+            <br><br><br><br><br>
+            <strong>( ........................................... )</strong><br>
+            NIP. ........................................
+        </td>
+        <td colspan="27" style="border: none;"></td>
+        <td colspan="5" style="border: none; text-align: center; vertical-align: top;">
+            Padang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
+            Wali Kelas {{ $kelas->nama_kelas }}
+            <br><br><br><br><br>
+            <strong>( ........................................... )</strong><br>
+            NIP. ........................................
+        </td>
+    </tr>
+</table>

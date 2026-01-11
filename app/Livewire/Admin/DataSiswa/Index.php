@@ -17,8 +17,26 @@ class Index extends Component
     #[Layout('components.layouts.admin')]
 
     public $search = '';
+    public $selectedKelas = '';
+    public $sortField = 'nama';
+    public $sortDirection = 'asc';
     public $showImportModal = false;
     public $importFile;
+
+    public function updatedSelectedKelas()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortField === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortField = $field;
+            $this->sortDirection = 'asc';
+        }
+    }
 
     public function delete($id)
     {
@@ -124,12 +142,27 @@ class Index extends Component
 
     public function render()
     {
+        $query = Siswa::with(['kelas', 'tahun_ajar'])
+            ->leftJoin('kelas', 'siswas.kelas_id', '=', 'kelas.id')
+            ->select('siswas.*')
+            ->where(function($q) {
+                $q->where('siswas.nama', 'like', '%' . $this->search . '%')
+                  ->orWhere('siswas.nis', 'like', '%' . $this->search . '%');
+            });
+
+        if ($this->selectedKelas) {
+            $query->where('siswas.kelas_id', $this->selectedKelas);
+        }
+
+        if ($this->sortField === 'nama_kelas') {
+            $query->orderBy('kelas.nama_kelas', $this->sortDirection);
+        } else {
+            $query->orderBy('siswas.' . $this->sortField, $this->sortDirection);
+        }
+
         return view('livewire.admin.data-siswa.index', [
-            'siswas' => Siswa::with(['kelas', 'tahun_ajar'])
-                ->where('nama', 'like', '%' . $this->search . '%')
-                ->orWhere('nis', 'like', '%' . $this->search . '%')
-                ->latest()
-                ->paginate(10)
+            'siswas' => $query->paginate(10),
+            'kelass' => Kelas::orderBy('nama_kelas')->get()
         ]);
     }
 }

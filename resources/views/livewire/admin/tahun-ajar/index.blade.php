@@ -20,23 +20,30 @@
         </a>
     </header>
 
-    <!-- Flash Messages -->
-    @if (session()->has('success'))
-        <div
-            class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-            <span class="font-bold">{{ session('success') }}</span>
-        </div>
-    @endif
+    <!-- Flash Messages (Alpine.js auto-dismiss) -->
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity>
+        @if (session()->has('success'))
+            <div
+                class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-green-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span class="font-bold">{{ session('success') }}</span>
+                </div>
+                <button @click="show = false" class="text-green-600 hover:text-green-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
+    </div>
 
     <!-- Search Bar -->
     <div class="mb-6">
         <div class="relative max-w-md">
-            <input type="text" wire:model.live="search" placeholder="Cari tahun ajaran..."
+            <input type="text" wire:model.blur="search" placeholder="Cari tahun ajaran..."
                 class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm">
             <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg"
                 width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -146,8 +153,13 @@
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </a>
-                                    <button wire:click="delete({{ $tahun->id }})"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus tahun ajaran {{ $tahun->nama }}?"
+                                    <button type="button" 
+                                        @click="$dispatch('open-delete-modal', { 
+                                            id: {{ $tahun->id }}, 
+                                            title: 'Hapus Tahun Ajaran?',
+                                            message: 'Apakah Anda yakin ingin menghapus tahun ajaran {{ $tahun->nama }}?',
+                                            action: 'delete'
+                                        })"
                                         class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                         title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"

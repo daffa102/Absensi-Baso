@@ -20,23 +20,30 @@
         </a>
     </header>
 
-    <!-- Flash Messages -->
-    @if (session()->has('success'))
-        <div
-            class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-            <span class="font-bold">{{ session('success') }}</span>
-        </div>
-    @endif
+    <!-- Flash Messages (Alpine.js auto-dismiss) -->
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity>
+        @if (session()->has('success'))
+            <div
+                class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-green-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span class="font-bold">{{ session('success') }}</span>
+                </div>
+                <button @click="show = false" class="text-green-600 hover:text-green-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
+    </div>
 
     <!-- Search Bar -->
     <div class="mb-6">
         <div class="relative max-w-md">
-            <input type="text" wire:model.live="search" placeholder="Cari nama kelas..."
+            <input type="text" wire:model.blur="search" placeholder="Cari nama kelas..."
                 class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm">
             <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg"
                 width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -56,14 +63,47 @@
                         <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">
                             No
                         </th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">
-                            Nama Kelas
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider cursor-pointer group hover:bg-slate-100/50 transition-colors" wire:click="sortBy('nama_kelas')">
+                            <div class="flex items-center gap-2">
+                                <span class="{{ $sortField === 'nama_kelas' ? 'text-blue-600' : '' }}">Nama Kelas</span>
+                                <div class="flex flex-col text-[10px] {{ $sortField === 'nama_kelas' ? 'text-blue-600' : 'text-slate-300' }}">
+                                    @if($sortField === 'nama_kelas' && $sortDirection === 'asc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                    @elseif($sortField === 'nama_kelas' && $sortDirection === 'desc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                                    @endif
+                                </div>
+                            </div>
                         </th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">
-                            Jumlah Siswa
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider cursor-pointer group hover:bg-slate-100/50 transition-colors" wire:click="sortBy('siswas_count')">
+                            <div class="flex items-center gap-2">
+                                <span class="{{ $sortField === 'siswas_count' ? 'text-blue-600' : '' }}">Jumlah Siswa</span>
+                                <div class="flex flex-col text-[10px] {{ $sortField === 'siswas_count' ? 'text-blue-600' : 'text-slate-300' }}">
+                                    @if($sortField === 'siswas_count' && $sortDirection === 'asc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                    @elseif($sortField === 'siswas_count' && $sortDirection === 'desc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                                    @endif
+                                </div>
+                            </div>
                         </th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">
-                            Dibuat
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider cursor-pointer group hover:bg-slate-100/50 transition-colors" wire:click="sortBy('created_at')">
+                            <div class="flex items-center gap-2">
+                                <span class="{{ $sortField === 'created_at' ? 'text-blue-600' : '' }}">Dibuat</span>
+                                <div class="flex flex-col text-[10px] {{ $sortField === 'created_at' ? 'text-blue-600' : 'text-slate-300' }}">
+                                    @if($sortField === 'created_at' && $sortDirection === 'asc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                    @elseif($sortField === 'created_at' && $sortDirection === 'desc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                                    @endif
+                                </div>
+                            </div>
                         </th>
                         <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider text-center">
                             Aksi
@@ -113,8 +153,13 @@
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </a>
-                                    <button wire:click="delete({{ $kelas->id }})"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus kelas {{ $kelas->nama_kelas }}?"
+                                    <button type="button" 
+                                        @click="$dispatch('open-delete-modal', { 
+                                            id: {{ $kelas->id }}, 
+                                            title: 'Hapus Kelas?',
+                                            message: 'Apakah Anda yakin ingin menghapus kelas {{ $kelas->nama_kelas }} dan data di dalamnya?',
+                                            action: 'delete'
+                                        })"
                                         class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                         title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
@@ -163,7 +208,7 @@
 
         <!-- Pagination -->
         @if ($kelass->hasPages())
-            <div class="px-8 py-6 border-t border-slate-100">
+            <div class="px-8 py-6 border-t border-slate-50">
                 {{ $kelass->links() }}
             </div>
         @endif

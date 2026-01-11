@@ -6,8 +6,19 @@
                 Overview Dashboard
             </h1>
             <p class="text-slate-500 font-bold mt-1">
-                Selamat datang kembali, Admin!
+                {{ $selectedDate === date('Y-m-d') ? 'Data hari ini' : 'Data untuk tanggal ' . \Carbon\Carbon::parse($selectedDate)->translatedFormat('d F Y') }}
             </p>
+        </div>
+
+        <div class="flex items-center gap-3 bg-white p-2 rounded-2xl shadow-sm border border-slate-100">
+            <div class="px-3">
+                <p class="text-[10px] font-black text-slate-400 uppercase leading-none mb-1">Pilih Tanggal</p>
+                <input type="date" wire:model.live="selectedDate" 
+                    class="border-none p-0 text-sm font-black text-slate-700 focus:ring-0 cursor-pointer">
+            </div>
+            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            </div>
         </div>
     </header>
 
@@ -45,7 +56,7 @@
             </div>
         </div>
 
-        <!-- Siswa Hadir Hari Ini -->
+        <!-- Siswa Hadir -->
         <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-5">
             <div class="w-14 h-14 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -54,12 +65,12 @@
                 </svg>
             </div>
             <div>
-                <p class="text-xs font-black text-slate-400 uppercase">Hadir Hari Ini</p>
+                <p class="text-xs font-black text-slate-400 uppercase">Hadir</p>
                 <h4 class="text-2xl font-black text-slate-900">{{ number_format($hadirToday) }}</h4>
             </div>
         </div>
 
-        <!-- Siswa Tidak Hadir Hari Ini -->
+        <!-- Siswa Tidak Hadir -->
         <div class="bg-white p-6 rounded-[2rem] shadow-sm border border-slate-100 flex items-center gap-5">
             <div class="w-14 h-14 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -82,9 +93,11 @@
         <div class="p-8 border-b border-slate-50">
             <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
                 <div>
-                    <h3 class="text-xl font-black text-slate-900">Absensi Terbaru</h3>
+                    <h3 class="text-xl font-black text-slate-900">
+                        {{ $selectedDate === date('Y-m-d') ? 'Absensi Terbaru' : 'Rekap Absensi' }}
+                    </h3>
                     <p class="text-slate-400 text-sm font-bold">
-                        Data siswa yang tidak hadir hari ini
+                        {{ $selectedDate === date('Y-m-d') ? 'Data siswa yang tidak hadir hari ini' : 'Data siswa yang tidak hadir pada tanggal tersebut' }}
                     </p>
                 </div>
 
@@ -96,12 +109,15 @@
                 <label class="text-xs font-black text-slate-400 uppercase block mb-2">Filter Kelas</label>
                 <div class="relative">
                     <select wire:model.live="selectedKelas"
-                        class="w-full bg-white border-none rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer">
+                        class="w-full bg-white border @error('selectedKelas') border-red-500 @else border-none @enderror rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
                         <option value="">Semua Kelas</option>
                         @foreach ($kelasList as $kelas)
                             <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
                         @endforeach
                     </select>
+                    @error('selectedKelas')
+                        <p class="text-red-500 text-[10px] font-bold mt-1 ml-1">{{ $message }}</p>
+                    @enderror
                     <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
@@ -110,6 +126,30 @@
                         </svg>
                     </div>
                 </div>
+            </div>
+
+            <!-- Filter Status (Tabs) (Alpine.js powered for instant response) -->
+            <div x-data="{ status: @entangle('selectedStatus') }" class="flex flex-wrap items-center gap-2 mb-6">
+                <button @click="status = ''" 
+                    :class="status === '' ? 'bg-slate-900 text-white shadow-lg shadow-slate-200' : 'bg-white text-slate-600 border border-slate-100 hover:bg-slate-50'"
+                    class="px-5 py-2.5 rounded-xl text-sm font-black transition-all">
+                    Semua
+                </button>
+                <button @click="status = 'Sakit'" 
+                    :class="status === 'Sakit' ? 'bg-amber-500 text-white shadow-lg shadow-amber-200' : 'bg-white text-amber-600 border border-amber-100 hover:bg-amber-50'"
+                    class="px-5 py-2.5 rounded-xl text-sm font-black transition-all">
+                    Sakit
+                </button>
+                <button @click="status = 'Izin'" 
+                    :class="status === 'Izin' ? 'bg-blue-500 text-white shadow-lg shadow-blue-200' : 'bg-white text-blue-600 border border-blue-100 hover:bg-blue-50'"
+                    class="px-5 py-2.5 rounded-xl text-sm font-black transition-all">
+                    Izin
+                </button>
+                <button @click="status = 'Alpa'" 
+                    :class="status === 'Alpa' ? 'bg-red-500 text-white shadow-lg shadow-red-200' : 'bg-white text-red-600 border border-red-100 hover:bg-red-50'"
+                    class="px-5 py-2.5 rounded-xl text-sm font-black transition-all">
+                    Alpa
+                </button>
             </div>
 
             <!-- Monthly Export Section -->
@@ -121,11 +161,14 @@
                             <label class="text-xs font-black text-blue-400 uppercase block mb-2">Bulan</label>
                             <div class="relative">
                                 <select wire:model.live="selectedMonth"
-                                    class="w-full bg-white border-none rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
+                                    class="w-full bg-white border @error('selectedMonth') border-red-500 @else border-none @enderror rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
                                     @for ($m = 1; $m <= 12; $m++)
                                         <option value="{{ $m }}">{{ \Carbon\Carbon::create(null, $m, 1)->translatedFormat('F') }}</option>
                                     @endfor
                                 </select>
+                                @error('selectedMonth')
+                                    <p class="text-red-500 text-[10px] font-bold mt-1 ml-1">{{ $message }}</p>
+                                @enderror
                                 <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                                 </div>
@@ -136,11 +179,14 @@
                             <label class="text-xs font-black text-blue-400 uppercase block mb-2">Tahun</label>
                             <div class="relative">
                                 <select wire:model.live="selectedYear"
-                                    class="w-full bg-white border-none rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
+                                    class="w-full bg-white border @error('selectedYear') border-red-500 @else border-none @enderror rounded-xl px-4 py-3 font-bold text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 outline-none cursor-pointer shadow-sm">
                                     @for ($y = date('Y') - 1; $y <= date('Y') + 1; $y++)
                                         <option value="{{ $y }}">{{ $y }}</option>
                                     @endfor
                                 </select>
+                                @error('selectedYear')
+                                    <p class="text-red-500 text-[10px] font-bold mt-1 ml-1">{{ $message }}</p>
+                                @enderror
                                 <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                                 </div>
@@ -174,7 +220,7 @@
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto" wire:loading.class="opacity-50 transition-opacity">
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-slate-50/50">
@@ -194,7 +240,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse ($absentList as $absensi)
-                        <tr class="hover:bg-slate-50/50 transition-colors">
+                        <tr wire:key="absent-{{ $absensi->id }}" class="hover:bg-slate-50/50 transition-colors">
                             <td class="px-8 py-5">
                                 <div class="flex items-center gap-3">
                                     <div

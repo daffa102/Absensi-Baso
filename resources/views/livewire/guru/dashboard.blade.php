@@ -10,48 +10,56 @@
             </p>
         </div>
         <div class="flex items-center gap-3">
-            <form action="{{ route('logout') }}" method="POST"
-                onsubmit="return confirm('Apakah Anda yakin ingin keluar?')">
-                @csrf
-                <button type="submit"
-                    class="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-black text-sm hover:bg-red-100 transition-all flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                        <polyline points="16 17 21 12 16 7" />
-                        <line x1="21" y1="12" x2="9" y2="12" />
-                    </svg>
-                    Logout
-                </button>
-            </form>
+            <button type="button" @click="logoutModal = true"
+                class="bg-red-50 text-red-600 px-6 py-3 rounded-xl font-black text-sm hover:bg-red-100 transition-all flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Logout
+            </button>
         </div>
     </header>
 
-    <!-- Flash Messages -->
-    @if (session()->has('success'))
-        <div
-            class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-            <span class="font-bold">{{ session('success') }}</span>
-        </div>
-    @endif
+    <!-- Flash Messages (Alpine.js auto-dismiss) -->
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity>
+        @if (session()->has('success'))
+            <div
+                class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-green-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span class="font-bold">{{ session('success') }}</span>
+                </div>
+                <button @click="show = false" class="text-green-600 hover:text-green-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
 
-    @if (session()->has('error'))
-        <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-            </svg>
-            <span class="font-bold">{{ session('error') }}</span>
-        </div>
-    @endif
+        @if (session()->has('error'))
+            <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-red-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    <span class="font-bold">{{ session('error') }}</span>
+                </div>
+                <button @click="show = false" class="text-red-600 hover:text-red-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
+    </div>
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-5 gap-6 mb-10">
@@ -171,7 +179,7 @@
         </div>
     </div>
 
-    <!-- Absensi Table -->
+    <!-- Absensi Section -->
     @if ($selectedKelas)
         <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
             <div class="p-8 border-b border-slate-50">
@@ -181,112 +189,98 @@
                 </p>
             </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead>
-                        <tr class="bg-slate-50/50">
-                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase">No</th>
-                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase">NIS</th>
-                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase">Nama Siswa</th>
-                            <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase">Status Kehadiran</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-50">
-                        @forelse ($siswas as $index => $siswa)
-                            @php
-                                $existing = $existingAbsensi->get($siswa->id);
-                                $currentStatus =
-                                    $absensiData[$siswa->id]['status'] ?? ($existing ? $existing->status : '');
-                            @endphp
-                            <tr wire:key="siswa-{{ $siswa->id }}" class="hover:bg-slate-50/50 transition-colors">
-                                <td class="px-8 py-5">
-                                    <span class="text-sm font-bold text-slate-600">{{ $index + 1 }}</span>
-                                </td>
-                                <td class="px-8 py-5">
-                                    <span class="text-sm font-bold text-slate-900">{{ $siswa->nis }}</span>
-                                </td>
-                                <td class="px-8 py-5">
-                                    <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold text-sm">
-                                            {{ strtoupper(substr($siswa->nama, 0, 2)) }}
-                                        </div>
-                                        <p class="text-sm font-black text-slate-900">{{ $siswa->nama }}</p>
-                                    </div>
-                                </td>
-                                <!-- Status Multiple Choice -->
-                                <td class="px-8 py-5" x-data="{ localStatus: '{{ $currentStatus }}' }">
-                                    <div class="flex items-center gap-2">
-                                        <!-- Hadir -->
-                                        <button type="button"
-                                            @click="localStatus = 'Hadir'; $wire.setStatus({{ $siswa->id }}, 'Hadir')"
-                                            :class="localStatus === 'Hadir' ?
-                                                'bg-green-600 text-white shadow-lg shadow-green-500/30' :
-                                                'bg-slate-100 text-slate-600 hover:bg-green-100 hover:text-green-600'"
-                                            class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all">
-                                            Hadir
-                                        </button>
-                                        <!-- Sakit -->
-                                        <button type="button"
-                                            @click="localStatus = 'Sakit'; $wire.setStatus({{ $siswa->id }}, 'Sakit')"
-                                            :class="localStatus === 'Sakit' ?
-                                                'bg-amber-600 text-white shadow-lg shadow-amber-500/30' :
-                                                'bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-600'"
-                                            class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all">
-                                            Sakit
-                                        </button>
-                                        <!-- Izin -->
-                                        <button type="button"
-                                            @click="localStatus = 'Izin'; $wire.setStatus({{ $siswa->id }}, 'Izin')"
-                                            :class="localStatus === 'Izin' ?
-                                                'bg-blue-600 text-white shadow-lg shadow-blue-500/30' :
-                                                'bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600'"
-                                            class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all">
-                                            Izin
-                                        </button>
-                                        <!-- Alpa -->
-                                        <button type="button"
-                                            @click="localStatus = 'Alpa'; $wire.setStatus({{ $siswa->id }}, 'Alpa')"
-                                            :class="localStatus === 'Alpa' ?
-                                                'bg-red-600 text-white shadow-lg shadow-red-500/30' :
-                                                'bg-slate-100 text-slate-600 hover:bg-red-100 hover:text-red-600'"
-                                            class="px-4 py-2 rounded-lg text-xs font-black uppercase transition-all">
-                                            Alpa
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="px-8 py-12 text-center">
-                                    <div class="flex flex-col items-center gap-3">
-                                        <div
-                                            class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                                <circle cx="9" cy="7" r="4" />
-                                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <p class="text-slate-900 font-black text-lg">Tidak ada data siswa</p>
-                                            <p class="text-slate-500 font-bold text-sm mt-1">
-                                                @if ($search)
-                                                    Tidak ditemukan siswa dengan kata kunci "{{ $search }}"
-                                                @else
-                                                    Tidak ada siswa di kelas ini
-                                                @endif
-                                            </p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+            <!-- Header (Desktop Only) -->
+            <div class="hidden md:grid md:grid-cols-[80px_120px_1fr_auto] bg-slate-50/50 border-b border-slate-100 px-8 py-4">
+                <span class="text-xs font-black text-slate-400 uppercase">No</span>
+                <span class="text-xs font-black text-slate-400 uppercase">NIS</span>
+                <span class="text-xs font-black text-slate-400 uppercase">Nama Siswa</span>
+                <span class="text-xs font-black text-slate-400 uppercase pr-8">Status Kehadiran</span>
+            </div>
+
+            <!-- Student List -->
+            <div class="divide-y divide-slate-100" wire:loading.class="opacity-50 transition-opacity">
+                @forelse ($siswas as $index => $siswa)
+                    @php
+                        $existing = $existingAbsensi->get($siswa->id);
+                        $currentStatus = $absensiData[$siswa->id]['status'] ?? ($existing ? $existing->status : '');
+                    @endphp
+                    <div wire:key="siswa-{{ $siswa->id }}" 
+                        class="p-6 md:px-8 md:py-5 hover:bg-slate-50/50 transition-colors flex flex-col md:grid md:grid-cols-[80px_120px_1fr_auto] items-start md:items-center gap-4 md:gap-0">
+                        
+                        <!-- No & NIS (Rearranged for mobile) -->
+                        <div class="flex items-center gap-3 md:contents text-slate-400">
+                            <span class="text-sm font-bold md:text-slate-600">#{{ $index + 1 }}</span>
+                            <span class="text-sm font-extrabold md:text-slate-900 md:font-bold">{{ $siswa->nis }}</span>
+                        </div>
+
+                        <!-- Name -->
+                        <div class="flex items-center gap-3 w-full">
+                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
+                                {{ strtoupper(substr($siswa->nama, 0, 2)) }}
+                            </div>
+                            <p class="text-base md:text-sm font-black text-slate-900 truncate">{{ $siswa->nama }}</p>
+                        </div>
+
+                        <!-- Status Buttons (Alpine.js) -->
+                        <div class="w-full md:w-auto overflow-x-auto no-scrollbar pt-2 md:pt-0" x-data="{ localStatus: '{{ $currentStatus }}' }">
+                            <div class="flex items-center gap-2 min-w-max md:justify-end md:pr-4">
+                                <!-- Hadir -->
+                                <button type="button"
+                                    @click="localStatus = 'Hadir'; $wire.setStatus({{ $siswa->id }}, 'Hadir')"
+                                    :class="localStatus === 'Hadir' ?
+                                        'bg-green-600 text-white shadow-lg shadow-green-500/30 ring-2 ring-green-500/20' :
+                                        'bg-slate-100 text-slate-600 hover:bg-green-100 hover:text-green-600 shadow-sm'"
+                                    class="px-5 py-2.5 md:px-4 md:py-2 rounded-xl text-xs font-black uppercase transition-all whitespace-nowrap">
+                                    Hadir
+                                </button>
+                                <!-- Sakit -->
+                                <button type="button"
+                                    @click="localStatus = 'Sakit'; $wire.setStatus({{ $siswa->id }}, 'Sakit')"
+                                    :class="localStatus === 'Sakit' ?
+                                        'bg-amber-600 text-white shadow-lg shadow-amber-500/30 ring-2 ring-amber-500/20' :
+                                        'bg-slate-100 text-slate-600 hover:bg-amber-100 hover:text-amber-600 shadow-sm'"
+                                    class="px-5 py-2.5 md:px-4 md:py-2 rounded-xl text-xs font-black uppercase transition-all whitespace-nowrap">
+                                    Sakit
+                                </button>
+                                <!-- Izin -->
+                                <button type="button"
+                                    @click="localStatus = 'Izin'; $wire.setStatus({{ $siswa->id }}, 'Izin')"
+                                    :class="localStatus === 'Izin' ?
+                                        'bg-blue-600 text-white shadow-lg shadow-blue-500/30 ring-2 ring-blue-500/20' :
+                                        'bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600 shadow-sm'"
+                                    class="px-5 py-2.5 md:px-4 md:py-2 rounded-xl text-xs font-black uppercase transition-all whitespace-nowrap">
+                                    Izin
+                                </button>
+                                <!-- Alpa -->
+                                <button type="button"
+                                    @click="localStatus = 'Alpa'; $wire.setStatus({{ $siswa->id }}, 'Alpa')"
+                                    :class="localStatus === 'Alpa' ?
+                                        'bg-red-600 text-white shadow-lg shadow-red-500/30 ring-2 ring-red-500/20' :
+                                        'bg-slate-100 text-slate-600 hover:bg-red-100 hover:text-red-600 shadow-sm'"
+                                    class="px-5 py-2.5 md:px-4 md:py-2 rounded-xl text-xs font-black uppercase transition-all whitespace-nowrap">
+                                    Alpa
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <div class="px-8 py-16 text-center">
+                        <div class="flex flex-col items-center gap-4 text-center">
+                            <div class="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400 mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                    <circle cx="9" cy="7" r="4" />
+                                    <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-black text-slate-900">Tidak ada data siswa</h4>
+                                <p class="text-slate-500 font-bold text-sm mt-1">Coba cari dengan kata kunci lain bosku!</p>
+                            </div>
+                        </div>
+                    </div>
+                @endforelse
             </div>
 
             @if ($siswas->count() > 0)

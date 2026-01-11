@@ -1,4 +1,22 @@
-<aside class="w-72 fixed inset-y-0 left-0 glass-sidebar z-50 hidden lg:flex flex-col p-6">
+<!-- Overlay for mobile -->
+<div x-show="mobileMenu" 
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="mobileMenu = false"
+    class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40 lg:hidden"></div>
+
+<aside :class="mobileMenu ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
+    class="w-72 fixed inset-y-0 left-0 glass-sidebar z-50 flex flex-col p-6 transition-transform duration-300 ease-in-out">
+    
+    <!-- Close button for mobile -->
+    <button @click="mobileMenu = false" class="lg:hidden absolute right-4 top-4 p-2 text-slate-400 hover:text-slate-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+
     <!-- Logo -->
     <div class="flex items-center gap-3 px-2 mb-10">
         <div
@@ -65,19 +83,15 @@
 
     <!-- Bottom Profile -->
     <div class="mt-auto pt-6 border-t border-slate-100">
-        <form action="{{ route('logout') }}" method="POST"
-            onsubmit="return confirm('Apakah Anda yakin ingin keluar?')">
-            @csrf
-            <button type="submit"
-                class="w-full mt-4 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-red-500 hover:bg-red-50 transition-all">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-                    <polyline points="16 17 21 12 16 7" />
-                    <line x1="21" y1="12" x2="9" y2="12" />
-                </svg>
-                Keluar
-            </button>
-        </form>
+        <button type="button" @click="logoutModal = true"
+            class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-bold text-red-500 hover:bg-red-50 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+            </svg>
+            Keluar
+        </button>
     </div>
 </aside>

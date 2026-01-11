@@ -16,7 +16,7 @@
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-6 relative">
 
     <!-- Decorative background elements -->
     <div

@@ -17,11 +17,24 @@ class Dashboard extends Component
     #[Layout('components.layouts.admin')]
     public $selectedDate;
     public $selectedKelas = '';
+    public $selectedStatus = '';
     
     // Monthly Export Props
     public $selectedMonth;
     public $selectedYear;
     
+    protected $rules = [
+        'selectedKelas' => 'required',
+        'selectedMonth' => 'required|numeric|between:1,12',
+        'selectedYear' => 'required|numeric',
+    ];
+
+    protected $messages = [
+        'selectedKelas.required' => 'Silakan pilih kelas terlebih dahulu.',
+        'selectedMonth.required' => 'Bulan harus dipilih.',
+        'selectedYear.required' => 'Tahun harus dipilih.',
+    ];
+
     public function mount()
     {
         $this->selectedDate = date('Y-m-d');
@@ -31,10 +44,7 @@ class Dashboard extends Component
 
     public function exportMonthlyExcel()
     {
-        if (!$this->selectedKelas) {
-            session()->flash('error', 'Silakan pilih kelas terlebih dahulu.');
-            return;
-        }
+        $this->validate();
 
         $namaKelas = Kelas::find($this->selectedKelas)->nama_kelas;
         $monthName = \Carbon\Carbon::create(null, $this->selectedMonth, 1)->translatedFormat('F');
@@ -48,10 +58,7 @@ class Dashboard extends Component
 
     public function exportMonthlyPdf()
     {
-        if (!$this->selectedKelas) {
-            session()->flash('error', 'Silakan pilih kelas terlebih dahulu.');
-            return;
-        }
+        $this->validate();
 
         $namaKelas = Kelas::find($this->selectedKelas)->nama_kelas;
         $monthName = \Carbon\Carbon::create(null, $this->selectedMonth, 1)->translatedFormat('F');
@@ -73,25 +80,52 @@ class Dashboard extends Component
 
     public function render()
     {
-        $today = date('Y-m-d');
-        
-        // Query for absent list with class filter
-        $absentQuery = Absensi::with(['siswa.kelas', 'kelas'])
-            ->where('tanggal', $this->selectedDate)
-            ->whereIn('status', ['Sakit', 'Izin', 'Alpa']);
+        // 1. Fetch Class List (Minimal columns)
+        $kelasList = Kelas::select('id', 'nama_kelas')->orderBy('nama_kelas')->get();
+
+        // 2. Query for absent list with class and status filter
+        $absentQuery = Absensi::with(['siswa:id,nama,nis,kelas_id', 'siswa.kelas:id,nama_kelas', 'kelas:id,nama_kelas'])
+            ->where('tanggal', $this->selectedDate);
+            
+        if ($this->selectedStatus) {
+            $absentQuery->where('status', strtolower($this->selectedStatus));
+        } else {
+            $absentQuery->whereIn('status', ['sakit', 'izin', 'alpa']);
+        }
         
         if ($this->selectedKelas) {
             $absentQuery->where('kelas_id', $this->selectedKelas);
         }
+
+        // 3. Dynamic stats
+        $statsQuery = Absensi::where('tanggal', $this->selectedDate);
+        if ($this->selectedKelas) {
+            $statsQuery->where('kelas_id', $this->selectedKelas);
+        }
+
+        $stats = $statsQuery->selectRaw("
+                COUNT(CASE WHEN status = 'hadir' THEN 1 END) as hadir,
+                COUNT(CASE WHEN status = 'sakit' THEN 1 END) as sakit,
+                COUNT(CASE WHEN status = 'izin' THEN 1 END) as izin,
+                COUNT(CASE WHEN status = 'alpa' THEN 1 END) as alpa
+            ")
+            ->first();
         
+        // 4. Total Siswa count
+        $totalSiswaQuery = Siswa::query();
+        if ($this->selectedKelas) {
+            $totalSiswaQuery->where('kelas_id', $this->selectedKelas);
+        }
+        $totalSiswa = $totalSiswaQuery->count();
+
         return view('livewire.admin.dashboard', [
-            'totalSiswa' => Siswa::count(),
-            'hadirToday' => Absensi::where('tanggal', $today)->where('status', 'Hadir')->count(),
-            'sakitToday' => Absensi::where('tanggal', $today)->where('status', 'Sakit')->count(),
-            'izinToday' => Absensi::where('tanggal', $today)->where('status', 'Izin')->count(),
-            'alpaToday' => Absensi::where('tanggal', $today)->where('status', 'Alpa')->count(),
-            'kelasList' => Kelas::orderBy('nama_kelas')->get(),
-            'absentList' => $absentQuery->get(),
+            'totalSiswa' => $totalSiswa,
+            'hadirToday' => $stats->hadir ?? 0,
+            'sakitToday' => $stats->sakit ?? 0,
+            'izinToday' => $stats->izin ?? 0,
+            'alpaToday' => $stats->alpa ?? 0,
+            'kelasList' => $kelasList,
+            'absentList' => $absentQuery->latest()->get(),
         ]);
     }
 }

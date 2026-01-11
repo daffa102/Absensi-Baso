@@ -10,7 +10,7 @@
             </p>
         </div>
         <div class="flex items-center gap-3">
-            <button wire:click="openImportModal"
+            <button @click="open = true"
                 class="bg-green-600 text-white px-6 py-3 rounded-xl font-black text-sm shadow-lg shadow-green-500/30 hover:bg-green-700 transition-all flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -32,55 +32,89 @@
         </div>
     </header>
 
-    <!-- Flash Messages -->
-    @if (session()->has('success'))
-        <div
-            class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                <polyline points="22 4 12 14.01 9 11.01" />
-            </svg>
-            <span class="font-bold">{{ session('success') }}</span>
-        </div>
-    @endif
+    <!-- Flash Messages (Alpine.js auto-dismiss) -->
+    <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition.opacity>
+        @if (session()->has('success'))
+            <div
+                class="mb-6 bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-green-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <polyline points="22 4 12 14.01 9 11.01" />
+                    </svg>
+                    <span class="font-bold">{{ session('success') }}</span>
+                </div>
+                <button @click="show = false" class="text-green-600 hover:text-green-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
 
-    @if (session()->has('warning'))
-        <div
-            class="mb-6 bg-amber-50 border border-amber-200 text-amber-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
-                <line x1="12" y1="9" x2="12" y2="13" />
-                <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-            <span class="font-bold">{{ session('warning') }}</span>
-        </div>
-    @endif
+        @if (session()->has('warning'))
+            <div
+                class="mb-6 bg-amber-50 border border-amber-200 text-amber-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-amber-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    <span class="font-bold">{{ session('warning') }}</span>
+                </div>
+                <button @click="show = false" class="text-amber-600 hover:text-amber-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
 
-    @if (session()->has('error'))
-        <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-2xl flex items-center gap-3">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="15" y1="9" x2="9" y2="15" />
-                <line x1="9" y1="9" x2="15" y2="15" />
-            </svg>
-            <span class="font-bold">{{ session('error') }}</span>
-        </div>
-    @endif
+        @if (session()->has('error'))
+            <div class="mb-6 bg-red-50 border border-red-200 text-red-800 px-6 py-4 rounded-2xl flex items-center justify-between gap-3 shadow-sm shadow-red-100">
+                <div class="flex items-center gap-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="15" y1="9" x2="9" y2="15" />
+                        <line x1="9" y1="9" x2="15" y2="15" />
+                    </svg>
+                    <span class="font-bold">{{ session('error') }}</span>
+                </div>
+                <button @click="show = false" class="text-red-600 hover:text-red-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+        @endif
+    </div>
 
-    <!-- Search Bar -->
-    <div class="mb-6">
-        <div class="relative max-w-md">
-            <input type="text" wire:model.live="search" placeholder="Cari nama atau NIS siswa..."
-                class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm">
+    <!-- Search & Filter Bar -->
+    <div class="mb-6 flex flex-col md:flex-row gap-4">
+        <div class="relative max-w-md w-full">
+            <input type="text" wire:model.blur="search" placeholder="Cari nama atau NIS siswa..."
+                class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-bold focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm transition-all">
             <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" xmlns="http://www.w3.org/2000/svg"
                 width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="11" cy="11" r="8" />
                 <path d="m21 21-4.3-4.3" />
             </svg>
+        </div>
+        <div class="relative max-w-xs w-full">
+            <select wire:model.live="selectedKelas"
+                class="w-full bg-white border border-slate-200 rounded-xl pl-12 pr-4 py-3.5 text-sm font-black text-slate-700 appearance-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none shadow-sm transition-all cursor-pointer">
+                <option value="">Semua Kelas</option>
+                @foreach($kelass as $kelas)
+                    <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>
+                @endforeach
+            </select>
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 21h18" /><path d="M3 7v1a3 3 0 0 0 6 0V7m6 0v1a3 3 0 0 0 6 0V7" /><path d="M3 7V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2" /><path d="M15 21V12a3 3 0 0 0-6 0v9" />
+                </svg>
+            </div>
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
         </div>
     </div>
 
@@ -91,14 +125,50 @@
                 <thead>
                     <tr class="bg-slate-50/50">
                         <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">No</th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">NIS</th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">Nama Siswa
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider cursor-pointer group hover:bg-slate-100/50 transition-colors" wire:click="sortBy('nis')">
+                            <div class="flex items-center gap-2">
+                                <span class="{{ $sortField === 'nis' ? 'text-blue-600' : '' }}">NIS</span>
+                                <div class="flex flex-col text-[10px] {{ $sortField === 'nis' ? 'text-blue-600' : 'text-slate-300' }}">
+                                    @if($sortField === 'nis' && $sortDirection === 'asc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                    @elseif($sortField === 'nis' && $sortDirection === 'desc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                                    @endif
+                                </div>
+                            </div>
                         </th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">Kelas</th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">Tahun Ajaran
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider cursor-pointer group hover:bg-slate-100/50 transition-colors" wire:click="sortBy('nama')">
+                            <div class="flex items-center gap-2">
+                                <span class="{{ $sortField === 'nama' ? 'text-blue-600' : '' }}">Nama Siswa</span>
+                                <div class="flex flex-col text-[10px] {{ $sortField === 'nama' ? 'text-blue-600' : 'text-slate-300' }}">
+                                    @if($sortField === 'nama' && $sortDirection === 'asc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                    @elseif($sortField === 'nama' && $sortDirection === 'desc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                                    @endif
+                                </div>
+                            </div>
                         </th>
-                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider text-center">
-                            Aksi</th>
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider cursor-pointer group hover:bg-slate-100/50 transition-colors" wire:click="sortBy('nama_kelas')">
+                            <div class="flex items-center gap-2">
+                                <span class="{{ $sortField === 'nama_kelas' ? 'text-blue-600' : '' }}">Kelas</span>
+                                <div class="flex flex-col text-[10px] {{ $sortField === 'nama_kelas' ? 'text-blue-600' : 'text-slate-300' }}">
+                                    @if($sortField === 'nama_kelas' && $sortDirection === 'asc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+                                    @elseif($sortField === 'nama_kelas' && $sortDirection === 'desc')
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                                    @else
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="opacity-0 group-hover:opacity-100 transition-opacity"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                                    @endif
+                                </div>
+                            </div>
+                        </th>
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider">Tahun Ajaran</th>
+                        <th class="px-8 py-5 text-xs font-black text-slate-400 uppercase tracking-wider text-center">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -145,8 +215,13 @@
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </a>
-                                    <button wire:click="delete({{ $siswa->id }})"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus siswa {{ $siswa->nama }}?"
+                                    <button type="button" 
+                                        @click="$dispatch('open-delete-modal', { 
+                                            id: {{ $siswa->id }}, 
+                                            title: 'Hapus Siswa?',
+                                            message: 'Apakah Anda yakin ingin menghapus data siswa {{ $siswa->nama }}?',
+                                            action: 'delete'
+                                        })"
                                         class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                                         title="Hapus">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
@@ -197,24 +272,40 @@
 
         <!-- Pagination -->
         @if ($siswas->hasPages())
-            <div class="px-8 py-6 border-t border-slate-100">
+            <div class="px-8 py-6 border-t border-slate-50">
                 {{ $siswas->links() }}
             </div>
         @endif
     </div>
 
-    <!-- Import Modal -->
-    @if ($showImportModal)
-        <div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            wire:click="closeImportModal">
-            <div class="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full" wire:click.stop>
+    <!-- Import Modal (Alpine.js powered) -->
+    <div x-data="{ open: @entangle('showImportModal') }">
+        <div x-show="open" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            
+            <div @click.away="open = false" 
+                x-show="open"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-95"
+                x-transition:enter-end="opacity-100 scale-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 scale-100"
+                x-transition:leave-end="opacity-0 scale-95"
+                class="bg-white rounded-[2rem] shadow-2xl max-w-2xl w-full">
+                
                 <!-- Modal Header -->
                 <div class="p-8 border-b border-slate-100 flex items-center justify-between">
                     <div>
                         <h3 class="text-2xl font-black text-slate-900">Import Data Siswa</h3>
                         <p class="text-slate-500 font-bold text-sm mt-1">Upload file Excel untuk import data siswa</p>
                     </div>
-                    <button wire:click="closeImportModal"
+                    <button @click="open = false"
                         class="text-slate-400 hover:text-slate-600 transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
@@ -308,7 +399,7 @@
                             <span wire:loading.remove wire:target="importExcel">Import Data</span>
                             <span wire:loading wire:target="importExcel">Mengimport...</span>
                         </button>
-                        <button type="button" wire:click="closeImportModal"
+                        <button type="button" @click="open = false"
                             class="bg-slate-100 text-slate-700 px-8 py-3.5 rounded-xl font-black text-sm hover:bg-slate-200 transition-all">
                             Batal
                         </button>
@@ -316,5 +407,5 @@
                 </form>
             </div>
         </div>
-    @endif
+    </div>
 </main>
