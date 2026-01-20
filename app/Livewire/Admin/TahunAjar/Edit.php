@@ -45,6 +45,8 @@ class Edit extends Component
             'aktif' => $this->aktif,
         ]);
 
+        $this->dispatch('form-saved');
+
         session()->flash('success', 'Tahun ajar berhasil diperbarui.');
         return redirect()->route('admin.tahun-ajar.index');
     }

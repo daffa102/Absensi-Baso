@@ -48,6 +48,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/data-siswa', SiswaIndex::class)->name('data-siswa.index');
     Route::get('/data-siswa/create', SiswaCreate::class)->name('data-siswa.create');
     Route::get('/data-siswa/{id}/edit', SiswaEdit::class)->name('data-siswa.edit');
+
+    // Signature
+    Route::get('/signature', \App\Livewire\Admin\Signature\Index::class)->name('signature.index');
+    Route::get('/signature/create', \App\Livewire\Admin\Signature\Create::class)->name('signature.create');
+    Route::get('/signature/{id}/edit', \App\Livewire\Admin\Signature\Edit::class)->name('signature.edit');
 });
 
 // Guru Routes

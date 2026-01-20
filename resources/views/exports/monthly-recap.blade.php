@@ -77,23 +77,51 @@
 </table>
 
 {{-- Signature Section --}}
-<br>
+{{-- Use spacer table for predictable Excel spacing --}}
 <table style="width: 100%; border: none;">
+    <tr><td colspan="37" style="height: 30px;"></td></tr>
+</table>
+
+<table style="width: 100%; border: none;">
+    {{-- Row 1: Date --}}
     <tr>
-        <td colspan="5" style="border: none; text-align: center; vertical-align: top;">
-            Mengetahui,<br>
-            Kepala Sekolah
-            <br><br><br><br><br>
-            <strong>( ........................................... )</strong><br>
-            NIP. ........................................
+        <td colspan="32" style="border: none;"></td>
+        <td colspan="5" style="border: none; text-align: center;">Padang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}</td>
+    </tr>
+    {{-- Row 2: Title --}}
+    <tr>
+        <td colspan="32" style="border: none;"></td>
+        <td colspan="5" style="border: none; text-align: center;">Kepala Sekolah</td>
+    </tr>
+    {{-- Row 3: Signature Space (Target for Drawing) --}}
+    <tr>
+        <td colspan="32" style="border: none;"></td>
+        <td colspan="5" style="border: none; text-align: center; height: 100px; vertical-align: middle;">
+             {{-- Excel drawing goes here --}}
+             &nbsp;
         </td>
-        <td colspan="27" style="border: none;"></td>
-        <td colspan="5" style="border: none; text-align: center; vertical-align: top;">
-            Padang, {{ \Carbon\Carbon::now()->translatedFormat('d F Y') }}<br>
-            Wali Kelas {{ $kelas->nama_kelas }}
-            <br><br><br><br><br>
-            <strong>( ........................................... )</strong><br>
-            NIP. ........................................
+    </tr>
+    {{-- Row 4: Name --}}
+    <tr>
+        <td colspan="32" style="border: none;"></td>
+        <td colspan="5" style="border: none; text-align: center;">
+            @if(isset($signatures['kepala_sekolah']) && $signatures['kepala_sekolah'])
+                <strong>{{ $signatures['kepala_sekolah']->name }}</strong>
+            @else
+                <strong>...........................................</strong>
+            @endif
+        </td>
+    </tr>
+    {{-- Row 5: NIP --}}
+    <tr>
+        <td colspan="32" style="border: none;"></td>
+        <td colspan="5" style="border: none; text-align: center;">
+            @if(isset($signatures['kepala_sekolah']) && $signatures['kepala_sekolah'] && $signatures['kepala_sekolah']->nip)
+                NIP. {{ $signatures['kepala_sekolah']->nip }}
+            @else
+                NIP. ........................................
+            @endif
         </td>
     </tr>
 </table>
+

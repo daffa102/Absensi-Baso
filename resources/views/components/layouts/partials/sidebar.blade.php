@@ -79,6 +79,16 @@
             </svg>
             Tahun Ajaran
         </a>
+
+        <a href="{{ route('admin.signature.index') }}" wire:navigate
+            class="{{ Route::is('admin.signature.*') ? 'sidebar-item-active' : '' }} flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold transition-all group">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                <path d="m15 5 4 4" />
+            </svg>
+            Tanda Tangan
+        </a>
     </nav>
 
     <!-- Bottom Profile -->

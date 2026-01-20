@@ -1,4 +1,4 @@
-<div class="card">
+<div class="card" x-data="formAutoSave('guru_edit_filters', ['tanggal', 'tahun_ajar_id', 'kelas_id'])">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <h2>Edit Absensi Siswa</h2>
     </div>
@@ -9,14 +9,29 @@
         </div>
     @endif
 
+    <!-- Auto-save Indicator -->
+    <div x-show="hasData()"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="alert alert-info" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <div>
+            <strong>Filter Tersimpan Otomatis</strong>
+            <div style="font-size: 0.9em;">Pilihan filter Anda tersimpan di browser.</div>
+        </div>
+        <button @click="clearFormData()" type="button" class="btn btn-sm btn-light">
+            Reset Filter
+        </button>
+    </div>
+
     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
         <div class="form-group">
             <label>Tanggal Absensi</label>
-            <input type="date" wire:model.live="tanggal" class="form-control">
+            <input type="date" wire:model.live="tanggal" x-model="formData.tanggal" class="form-control">
         </div>
         <div class="form-group">
             <label>Pilih Tahun Ajar</label>
-            <select wire:model.live="tahun_ajar_id" class="form-control">
+            <select wire:model.live="tahun_ajar_id" x-model="formData.tahun_ajar_id" class="form-control">
                 <option value="">-- Pilih Tahun --</option>
                 @foreach($tahunAjars as $ta)
                     <option value="{{ $ta->id }}">{{ $ta->nama }}</option>
@@ -25,7 +40,7 @@
         </div>
         <div class="form-group">
             <label>Pilih Kelas</label>
-            <select wire:model.live="kelas_id" class="form-control">
+            <select wire:model.live="kelas_id" x-model="formData.kelas_id" class="form-control">
                 <option value="">-- Pilih Kelas --</option>
                 @foreach($kelass as $kelas)
                     <option value="{{ $kelas->id }}">{{ $kelas->nama_kelas }}</option>

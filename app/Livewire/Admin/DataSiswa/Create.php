@@ -32,6 +32,9 @@ class Create extends Component
             'tahun_ajar_id' => $this->tahun_ajar_id,
         ]);
 
+        // Dispatch event to clear localStorage
+        $this->dispatch('form-saved');
+
         session()->flash('success', 'Data siswa berhasil ditambahkan.');
         return redirect()->route('admin.data-siswa.index');
     }

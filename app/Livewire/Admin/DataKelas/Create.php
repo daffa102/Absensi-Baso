@@ -24,6 +24,8 @@ class Create extends Component
             'nama_kelas' => $this->nama_kelas,
         ]);
 
+        $this->dispatch('form-saved');
+
         session()->flash('success', 'Data kelas berhasil ditambahkan.');
         return redirect()->route('admin.data-kelas.index');
     }

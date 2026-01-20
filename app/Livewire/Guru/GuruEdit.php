@@ -81,6 +81,8 @@ class GuruEdit extends Component
             }
         });
 
+        $this->dispatch('form-saved');
+
         session()->flash('success', 'Perubahan absensi berhasil disimpan.');
     }
 

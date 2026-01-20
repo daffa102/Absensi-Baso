@@ -46,6 +46,8 @@ class Edit extends Component
             'tahun_ajar_id' => $this->tahun_ajar_id,
         ]);
 
+        $this->dispatch('form-saved');
+
         session()->flash('success', 'Data siswa berhasil diperbarui.');
         return redirect()->route('admin.data-siswa.index');
     }

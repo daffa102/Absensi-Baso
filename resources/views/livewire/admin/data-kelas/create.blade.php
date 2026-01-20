@@ -1,6 +1,6 @@
-<main class="flex-1 lg:ml-72 min-h-screen p-6 md:p-10">
+<main class="flex-1 lg:ml-72 min-h-screen p-6 md:p-10" x-data="formAutoSave('kelas_create_form', ['nama_kelas'])">
     <!-- Header -->
-    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+    <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div>
             <h1 class="text-3xl font-black text-slate-900 tracking-tight">
                 Tambah Kelas Baru
@@ -20,6 +20,28 @@
         </a>
     </header>
 
+    <!-- Auto-save Indicator -->
+    <div x-show="hasData()"
+        x-transition:enter="transition ease-out duration-300"
+        x-transition:enter-start="opacity-0 -translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        class="mb-6 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-xl flex items-center gap-3">
+        <svg class="animate-pulse" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+            <polyline points="17 21 17 13 7 13 7 21" />
+            <polyline points="7 3 7 8 15 8" />
+        </svg>
+        <div class="flex-1">
+            <p class="font-bold text-sm">Data tersimpan otomatis</p>
+            <p class="text-xs font-medium text-blue-600">Form Anda aman meskipun halaman di-refresh</p>
+        </div>
+        <button @click="clearFormData()" type="button"
+            class="text-xs font-bold text-blue-600 hover:text-blue-800 underline transition-colors">
+            Hapus Data
+        </button>
+    </div>
+
     <!-- Form Card -->
     <div class="max-w-2xl">
         <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
@@ -36,7 +58,7 @@
                     <label for="nama_kelas" class="block text-sm font-black text-slate-700 mb-2">
                         Nama Kelas <span class="text-red-500">*</span>
                     </label>
-                    <input type="text" id="nama_kelas" wire:model="nama_kelas"
+                    <input type="text" id="nama_kelas" wire:model="nama_kelas" x-model="formData.nama_kelas"
                         class="w-full bg-slate-50 border @error('nama_kelas') border-red-300 @else border-slate-200 @enderror rounded-xl px-4 py-3.5 font-bold text-slate-700 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
                         placeholder="Contoh: XII IPA 1">
                     @error('nama_kelas')
